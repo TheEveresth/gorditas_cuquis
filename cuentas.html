@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cuentas | Gorditas Cuquis</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <h1>Gorditas Cuquis</h1>
+    <p id="tituloMesa">Cuentas</p>
+  </div>
+
+  <button class="btn-secondary" onclick="window.location.href='mesas.html'">
+    Volver a mesas
+  </button>
+</header>
+
+<main class="dashboard">
+  <section class="welcome-card">
+    <h2 id="nombreMesa">Mesa</h2>
+    <p>Busca una cuenta abierta o entra para editar/cobrar.</p>
+  </section>
+
+  <section class="quick-actions">
+    <button class="btn-primary" onclick="window.location.href='tomar-orden.html'">
+      Tomar nueva orden
+    </button>
+  </section>
+
+  <section class="welcome-card">
+    <label>Buscar cuenta</label>
+    <input
+      type="text"
+      id="buscadorCuentas"
+      placeholder="Buscar por nombre o número de orden..."
+      class="input-full"
+    >
+  </section>
+
+  <section class="dashboard-grid" id="cuentas"></section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="js/config.js"></script>
+<script src="js/cuentas.js"></script>
+
+</body>
+</html>

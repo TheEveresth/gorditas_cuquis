@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pedidos | Gorditas Cuquis</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <h1>Gorditas Cuquis</h1>
+    <p>Pedidos para llevar</p>
+  </div>
+
+  <button class="btn-secondary" onclick="window.location.href='dashboard.html'">
+    Volver
+  </button>
+</header>
+
+<main class="dashboard">
+  <section class="welcome-card">
+    <h2>Pedidos para llevar</h2>
+    <p>Consulta pedidos en producción o listos para entregar.</p>
+  </section>
+
+  <section class="welcome-card">
+    <label>Buscar pedido</label>
+    <input
+      type="text"
+      id="buscadorPedidos"
+      placeholder="Buscar por nombre, referencia o número..."
+      class="input-full"
+    >
+  </section>
+
+  <h2>En producción</h2>
+  <section class="dashboard-grid" id="pedidosProduccion"></section>
+
+  <h2>Listos para entregar</h2>
+  <section class="dashboard-grid" id="pedidosListos"></section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="js/config.js"></script>
+<script src="js/pedidos.js"></script>
+
+</body>
+</html>

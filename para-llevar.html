@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Para llevar | Gorditas Cuquis</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <h1>Gorditas Cuquis</h1>
+    <p>Nuevo pedido para llevar</p>
+  </div>
+
+  <button class="btn-secondary" onclick="window.location.href='dashboard.html'">
+    Volver
+  </button>
+</header>
+
+<main class="dashboard">
+  <section class="welcome-card">
+    <h2>Pedido para llevar</h2>
+    <p>Abre una orden para preparar y cobrar cuando el cliente regrese.</p>
+  </section>
+
+  <section class="quick-actions">
+    <button class="btn-primary" onclick="crearPedidoParaLlevar()">
+      Crear pedido para llevar
+    </button>
+
+    <button class="btn-secondary" onclick="window.location.href='pedidos.html'">
+      Ver pedidos pendientes
+    </button>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="js/config.js"></script>
+<script src="js/para-llevar.js"></script>
+
+</body>
+</html>

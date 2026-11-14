@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tomar orden | Gorditas Cuquis</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <h1>Gorditas Cuquis</h1>
+    <p>Tomar nueva orden</p>
+  </div>
+
+  <button class="btn-secondary" onclick="window.location.href='dashboard.html'">
+    Volver
+  </button>
+</header>
+
+<main class="pos-layout">
+
+  <section class="panel productos-panel">
+    <div class="panel-header">
+      <h2>Productos</h2>
+      <button class="btn-primary" onclick="abrirProductoRapido()">+ Producto rápido</button>
+    </div>
+
+    <div id="categorias" class="categorias-bar"></div>
+
+    <div id="productos" class="productos-grid"></div>
+  </section>
+
+  <section class="panel carrito-panel">
+    <div class="tomador-form">
+      <h2>Nueva orden</h2>
+
+      <label>Nombre del cliente</label>
+      <input type="text" id="nombreCliente" class="input-full" placeholder="Ej. Juan">
+
+      <label>Teléfono opcional</label>
+      <input type="text" id="telefonoCliente" class="input-full" placeholder="Ej. 618...">
+
+      <label>Tipo de pedido</label>
+      <select id="tipoPedido" class="input-full">
+        <option value="para_llevar">Para llevar</option>
+        <option value="local">Local</option>
+      </select>
+
+      <div id="grupoMesa">
+        <label>Mesa</label>
+        <select id="mesaSelect" class="input-full"></select>
+      </div>
+
+      <label>Excepciones</label>
+      <input type="text" id="excepciones" class="input-full" placeholder="Ej. sin cebolla, sin chile">
+
+      <label>Notas</label>
+      <textarea id="notas" class="input-full textarea-input" placeholder="Notas generales del pedido"></textarea>
+
+      <hr>
+    </div>
+    <div class="paquetes-header">
+      <h3>Paquetes / Platos</h3>
+      <button class="btn-primary" onclick="crearPaquete()">+ Nuevo paquete</button>
+    </div>
+
+    <div id="paquetesTabs" class="categorias-bar"></div>
+
+    <div id="carrito" class="carrito-lista"></div>
+
+    <div class="total-box">
+      <span>Total</span>
+      <strong>$<span id="total">0.00</span></strong>
+    </div>
+
+    <div class="acciones">
+      <button class="btn-danger" onclick="vaciarCarrito()">Vaciar</button>
+      <button class="btn-success" onclick="guardarOrden()">Guardar orden</button>
+    </div>
+  </section>
+
+</main>
+
+<div id="modalProductoRapido" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <h2>Producto rápido</h2>
+
+    <label>Nombre</label>
+    <input type="text" id="productoRapidoNombre" class="input-full" placeholder="Ej. Extra salsa">
+
+    <label>Precio</label>
+    <input type="number" id="productoRapidoPrecio" class="input-full" placeholder="0.00">
+
+    <div class="acciones" style="margin-top:16px;">
+      <button class="btn-secondary" onclick="cerrarProductoRapido()">Cancelar</button>
+      <button class="btn-success" onclick="agregarProductoRapido()">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="js/config.js"></script>
+<script src="js/tomar-orden.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Gorditas Cuquis</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <h1>Gorditas Cuquis</h1>
+    <p>Panel principal</p>
+  </div>
+  <button class="btn-secondary" onclick="cerrarSesion()">Cerrar sesión</button>
+</header>
+
+<main class="dashboard">
+  <section class="welcome-card">
+    <h2 id="bienvenida">Bienvenido</h2>
+    <p>Selecciona una opción para comenzar.</p>
+  </section>
+
+  <section class="dashboard-grid">
+    <article class="metric-card">
+      <span>Ventas de hoy</span>
+      <strong id="ventasHoy">$0.00</strong>
+    </article>
+
+    <article class="metric-card">
+      <span>Órdenes de hoy</span>
+      <strong id="ordenesHoy">0</strong>
+    </article>
+
+    <article class="metric-card">
+      <span>Mesas activas</span>
+      <strong id="mesasActivas">0</strong>
+    </article>
+  </section>
+
+  <section class="quick-actions">
+    <button class="btn-primary" onclick="window.location.href='tomar-orden.html'">
+      Tomar orden
+    </button>
+
+    <button class="btn-secondary" onclick="window.location.href='mesas.html'">
+      Local / Mesas
+    </button>
+
+    <button class="btn-success" onclick="window.location.href='pedidos.html'">
+      Pedidos pendientes
+    </button>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="js/config.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>
+
+    

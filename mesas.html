@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mesas | Gorditas Cuquis</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <h1>Gorditas Cuquis</h1>
+    <p>Mesas / Local</p>
+  </div>
+
+  <button class="btn-secondary" onclick="window.location.href='dashboard.html'">
+    Volver
+  </button>
+</header>
+
+<main class="dashboard">
+  <section class="welcome-card">
+    <h2>Mesas</h2>
+    <p>Selecciona una mesa para ver sus cuentas o abrir una nueva.</p>
+  </section>
+
+  <section id="mesas" class="dashboard-grid"></section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="js/config.js"></script>
+<script src="js/mesas.js"></script>
+
+</body>
+</html>
