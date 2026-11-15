@@ -1,0 +1,99 @@
+# ============================================================
+# .gitignore — POS Gorditas Cuquis
+# ============================================================
+# Regla: al repositorio sube el CODIGO y la DOCUMENTACION del sistema.
+# No sube nada personal, nada local de una maquina, ningun secreto y ningun
+# dato real del negocio (ventas, empleados, clientes).
+#
+# Si algún día hace falta versionar un archivo de estos a propósito:
+#   git add -f <archivo>
+# y conviene decir en el commit por qué.
+
+
+# ---------- Personal, no del equipo ----------
+# Directivas de cada quien; la plantilla versionada es .docs/preferencias.ejemplo.md
+PREFERENCIAS.md
+
+# Archivo temporal del protocolo de commits (.claude/skills/git-commit-cuquis)
+_git_msg.txt
+
+
+# ---------- Local de cada maquina ----------
+# Las skills y launch.json SI se versionan: son del equipo.
+# Esto es la configuracion local de la herramienta (permisos, rutas, tokens).
+.claude/settings.local.json
+.claude/*.local.json
+
+.vscode/
+.idea/
+*.code-workspace
+.history/
+
+
+# ---------- Secretos ----------
+# Nada de esto debe existir en el repo. La llave publica de Supabase vive en
+# js/core/conexion.js y es publica por diseño; cualquier otra credencial
+# (service_role, contrasena de Postgres, tokens de impresora o de pagos) va en
+# el servidor, nunca en un archivo que descargue el navegador.
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*credencial*
+*credential*
+*secret*
+service_role*
+supabase/.temp/
+
+
+# ---------- Datos reales del negocio ----------
+# Ventas, nomina, clientes y respaldos no son codigo y no se comparten por Git.
+# (Los scripts SQL de .docs/002_specs/<plan>/sql/ SI se versionan: son esquema,
+# no datos.)
+*.xlsx
+*.xlsm
+*.xls
+*.csv
+respaldos/
+exportes/
+*.dump
+*.sql.gz
+*.bak.sql
+
+
+# ---------- Basura de trabajo ----------
+*.log
+logs/
+*.bak
+*.old
+*.orig
+*.tmp
+*~
+tmp/
+temporal/
+_scratch/
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+
+
+# ---------- Binarios y descargas ----------
+# Drivers de la impresora, instaladores y comprimidos: se guardan aparte.
+*.exe
+*.msi
+*.zip
+*.rar
+*.7z
+
+
+# ---------- Sistema operativo ----------
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.swp
