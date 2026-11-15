@@ -10,13 +10,9 @@ let orden = null;
 let paquetes = [];
 let paqueteActivoId = null;
 
-const empleado = JSON.parse(localStorage.getItem("empleado"));
 const mesa = JSON.parse(localStorage.getItem("mesa"));
 const ordenActual = JSON.parse(localStorage.getItem("ordenActual"));
 
-if (!empleado) {
-  window.location.href = "index.html";
-}
 
 if (!ordenActual || !ordenActual.id) {
   alert("No hay una orden activa");
@@ -40,17 +36,9 @@ if (recibidoInput) {
 // ==========================
 
 async function cargarOrden() {
-  const { data, error } = await db
-    .from("ordenes")
-    .select("*")
-    .eq("id", ordenActual.id)
-    .single();
+  const data = await datos.ordenPorId(ordenActual.id);
 
-  if (error) {
-    console.error(error);
-    alert("Error al cargar la orden");
-    return;
-  }
+  if (!data) return;
 
   orden = data;
   mostrarDatosCliente();
@@ -101,17 +89,9 @@ function mostrarDatosCliente() {
 // ==========================
 
 async function cargarCategorias() {
-  const { data, error } = await db
-    .from("categorias")
-    .select("*")
-    .eq("activa", true)
-    .order("nombre", { ascending: true });
+  const data = await datos.categoriasActivas();
 
-  if (error) {
-    console.error(error);
-    alert("Error al cargar categorías");
-    return;
-  }
+  if (!data) return;
 
   categorias = data;
   mostrarCategorias();
@@ -155,17 +135,9 @@ function mostrarCategorias() {
 // ==========================
 
 async function cargarProductos() {
-  const { data, error } = await db
-    .from("productos")
-    .select("*")
-    .eq("activo", true)
-    .order("nombre", { ascending: true });
+  const data = await datos.productosActivos();
 
-  if (error) {
-    console.error(error);
-    alert("Error al cargar productos");
-    return;
-  }
+  if (!data) return;
 
   productos = data;
   mostrarProductos();
@@ -211,32 +183,9 @@ function mostrarProductos() {
 // ==========================
 
 async function cargarPaquetes() {
-  const { data, error } = await db
-    .from("orden_paquetes")
-    .select(`
-      id,
-      nombre,
-      created_at,
-      orden_items (
-        id,
-        producto_id,
-        nombre_personalizado,
-        cantidad,
-        precio_unitario,
-        pagado,
-        productos (
-          nombre
-        )
-      )
-    `)
-    .eq("orden_id", ordenActual.id)
-    .order("created_at", { ascending: true });
+  const data = await datos.paquetesDeOrden(ordenActual.id);
 
-  if (error) {
-    console.error(error);
-    alert("Error al cargar paquetes");
-    return;
-  }
+  if (!data) return;
 
   paquetes = data.map(paquete => ({
     id: paquete.id,
@@ -271,20 +220,9 @@ async function cargarPaquetes() {
 async function crearPaquete() {
   const numero = paquetes.length + 1;
 
-  const { data, error } = await db
-    .from("orden_paquetes")
-    .insert([{
-      orden_id: ordenActual.id,
-      nombre: `Paquete ${numero}`
-    }])
-    .select()
-    .single();
+  const data = await datos.crearPaquete(ordenActual.id, `Paquete ${numero}`);
 
-  if (error) {
-    console.error(error);
-    alert("Error al crear paquete");
-    return;
-  }
+  if (!data) return;
 
   paquetes.push({
     id: data.id,
@@ -352,36 +290,24 @@ async function agregarProductoAOrden(producto) {
   });
 
   if (itemExistente) {
-    const { error } = await db
-      .from("orden_items")
-      .update({
-        cantidad: itemExistente.cantidad + 1
-      })
-      .eq("id", itemExistente.item_id);
+    const sumado = await datos.cambiarCantidadItem(
+      itemExistente.item_id,
+      itemExistente.cantidad + 1
+    );
 
-    if (error) {
-      console.error(error);
-      alert("Error al actualizar producto");
-      return;
-    }
+    if (!sumado) return;
   } else {
-    const { error } = await db
-      .from("orden_items")
-      .insert([{
-        orden_id: ordenActual.id,
-        paquete_id: paquete.id,
-        producto_id: producto.id,
-        nombre_personalizado: null,
-        cantidad: 1,
-        precio_unitario: Number(producto.precio_venta),
-        pagado: false
-      }]);
+    const agregado = await datos.agregarItem({
+      orden_id: ordenActual.id,
+      paquete_id: paquete.id,
+      producto_id: producto.id,
+      nombre_personalizado: null,
+      cantidad: 1,
+      precio_unitario: Number(producto.precio_venta),
+      pagado: false
+    });
 
-    if (error) {
-      console.error(error);
-      alert("Error al agregar producto");
-      return;
-    }
+    if (!agregado) return;
   }
 
   await cargarPaquetes();
@@ -432,23 +358,17 @@ async function agregarProductoRapido() {
     return;
   }
 
-  const { error } = await db
-    .from("orden_items")
-    .insert([{
-      orden_id: ordenActual.id,
-      paquete_id: paquete.id,
-      producto_id: null,
-      nombre_personalizado: nombre,
-      cantidad: 1,
-      precio_unitario: precio,
-      pagado: false
-    }]);
+  const agregado = await datos.agregarItem({
+    orden_id: ordenActual.id,
+    paquete_id: paquete.id,
+    producto_id: null,
+    nombre_personalizado: nombre,
+    cantidad: 1,
+    precio_unitario: precio,
+    pagado: false
+  }, "Error al agregar producto rápido");
 
-  if (error) {
-    console.error(error);
-    alert("Error al agregar producto rápido");
-    return;
-  }
+  if (!agregado) return;
 
   cerrarProductoRapido();
   await cargarPaquetes();
@@ -535,18 +455,13 @@ async function sumarProducto(paqueteId, itemId) {
 
   if (!item || item.pagado) return;
 
-  const { error } = await db
-    .from("orden_items")
-    .update({
-      cantidad: item.cantidad + 1
-    })
-    .eq("id", item.item_id);
+  const sumado = await datos.cambiarCantidadItem(
+    item.item_id,
+    item.cantidad + 1,
+    "Error al sumar producto"
+  );
 
-  if (error) {
-    console.error(error);
-    alert("Error al sumar producto");
-    return;
-  }
+  if (!sumado) return;
 
   await cargarPaquetes();
 }
@@ -561,18 +476,13 @@ async function restarProducto(paqueteId, itemId) {
     return;
   }
 
-  const { error } = await db
-    .from("orden_items")
-    .update({
-      cantidad: item.cantidad - 1
-    })
-    .eq("id", item.item_id);
+  const restado = await datos.cambiarCantidadItem(
+    item.item_id,
+    item.cantidad - 1,
+    "Error al restar producto"
+  );
 
-  if (error) {
-    console.error(error);
-    alert("Error al restar producto");
-    return;
-  }
+  if (!restado) return;
 
   await cargarPaquetes();
 }
@@ -585,16 +495,9 @@ async function eliminarProducto(paqueteId, itemId) {
   const confirmar = confirm("¿Eliminar este producto de la cuenta?");
   if (!confirmar) return;
 
-  const { error } = await db
-    .from("orden_items")
-    .delete()
-    .eq("id", item.item_id);
+  const eliminado = await datos.eliminarItem(item.item_id);
 
-  if (error) {
-    console.error(error);
-    alert("Error al eliminar producto");
-    return;
-  }
+  if (!eliminado) return;
 
   await cargarPaquetes();
 }
@@ -680,18 +583,7 @@ function calcularTotales() {
 async function actualizarTotalOrden() {
   const { totalCuenta } = calcularTotales();
 
-  const { error } = await db
-    .from("ordenes")
-    .update({
-      subtotal: totalCuenta,
-      total: totalCuenta
-    })
-    .eq("id", ordenActual.id);
-
-  if (error) {
-    console.error(error);
-    alert("Error al actualizar total de la cuenta");
-  }
+  await datos.actualizarTotalesOrden(ordenActual.id, totalCuenta, totalCuenta);
 }
 
 function calcularCambio() {
@@ -738,58 +630,26 @@ async function guardarVenta() {
     return;
   }
 
-  const { error: errorPago } = await db
-    .from("pagos_venta")
-    .insert([{
-      orden_id: ordenActual.id,
-      metodo_pago: metodo,
-      monto: metodo === "efectivo" ? recibido : totalSeleccionado,
-      cobrado_por: empleado.id
-    }]);
-
-  if (errorPago) {
-    console.error(errorPago);
-    alert("Error al guardar pago");
-    return;
-  }
-
   const idsSeleccionados = itemsSeleccionados.map(item => item.item_id);
 
-  const { error: errorItems } = await db
-    .from("orden_items")
-    .update({
-      pagado: true
-    })
-    .in("id", idsSeleccionados);
+  // El cobro completo (registrar el pago, marcar los renglones y cerrar la
+  // cuenta si ya no queda nada) ocurre en una sola transaccion en la base.
+  // El monto lo calcula la base a partir de los renglones, no este navegador.
+  const resultado = await datos.cobrarItems(
+    ordenActual.id,
+    idsSeleccionados,
+    metodo,
+    empleado.id
+  );
 
-  if (errorItems) {
-    console.error(errorItems);
-    alert("Error al marcar productos como pagados");
+  if (!resultado) {
+    await cargarPaquetes();
     return;
   }
 
   await cargarPaquetes();
 
-  const quedanPendientes = paquetes.some(paquete => {
-    return paquete.items.some(item => !item.pagado);
-  });
-
-  if (!quedanPendientes) {
-    const { error: errorOrden } = await db
-      .from("ordenes")
-      .update({
-        estado: "cerrada",
-        estado_preparacion: "entregado",
-        closed_at: new Date().toISOString()
-      })
-      .eq("id", ordenActual.id);
-
-    if (errorOrden) {
-      console.error(errorOrden);
-      alert("Pago guardado, pero error al cerrar la cuenta");
-      return;
-    }
-
+  if (resultado?.cerrada) {
     localStorage.removeItem("ordenActual");
 
     alert("Cuenta cobrada completamente");
@@ -815,11 +675,13 @@ async function guardarVenta() {
 // ==========================
 
 function toggleProductos() {
-  const panel = document.querySelector(".productos-panel");
+  const layout = document.querySelector(".pos-layout");
 
-  if (!panel) return;
+  if (!layout) return;
 
-  panel.classList.toggle("productos-minimizado");
+  // La clase va en el layout porque es el grid quien define el ancho
+  // de las dos columnas.
+  layout.classList.toggle("productos-ocultos");
 }
 
 
@@ -835,11 +697,6 @@ function volverACuentas() {
   } else {
     window.location.href = "pedidos.html";
   }
-}
-
-function cerrarSesion() {
-  localStorage.clear();
-  window.location.href = "index.html";
 }
 
 
