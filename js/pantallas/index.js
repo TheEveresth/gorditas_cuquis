@@ -21,24 +21,20 @@ async function login() {
     return;
   }
 
-  const { data, error } = await db
-    .from("empleados")
-    .select("*")
-    .eq("numero_empleado", numero)
-    .eq("password_hash", password)
-    .maybeSingle();
+  // La contraseña se verifica dentro de la base de datos (bcrypt).
+  // La tabla empleados ya no se consulta desde el navegador.
+  const empleado = await datos.login(numero, password);
 
-  if (error) {
-    console.error("Error login:", error);
-    alert("Error al conectar con la base de datos");
+  // undefined = la base no respondio y datos.js ya aviso.
+  if (empleado === undefined) {
     return;
   }
 
-  if (!data) {
+  if (!empleado) {
     alert("Credenciales incorrectas");
     return;
   }
 
-  localStorage.setItem("empleado", JSON.stringify(data));
+  localStorage.setItem("empleado", JSON.stringify(empleado));
   window.location.href = "dashboard.html";
 }
