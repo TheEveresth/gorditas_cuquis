@@ -5,11 +5,6 @@ let categoriaActual = "todos";
 let paquetes = [];
 let paqueteActivoId = null;
 
-const empleado = JSON.parse(localStorage.getItem("empleado"));
-
-if (!empleado) {
-  window.location.href = "index.html";
-}
 
 document.getElementById("tipoPedido").addEventListener("change", cambiarTipoPedido);
 
@@ -18,51 +13,27 @@ document.getElementById("tipoPedido").addEventListener("change", cambiarTipoPedi
 // ==========================
 
 async function cargarCategorias() {
-  const { data, error } = await db
-    .from("categorias")
-    .select("*")
-    .eq("activa", true)
-    .order("nombre", { ascending: true });
+  const data = await datos.categoriasActivas();
 
-  if (error) {
-    console.error(error);
-    alert("Error al cargar categorías");
-    return;
-  }
+  if (!data) return;
 
   categorias = data;
   mostrarCategorias();
 }
 
 async function cargarProductos() {
-  const { data, error } = await db
-    .from("productos")
-    .select("*")
-    .eq("activo", true)
-    .order("nombre", { ascending: true });
+  const data = await datos.productosActivos();
 
-  if (error) {
-    console.error(error);
-    alert("Error al cargar productos");
-    return;
-  }
+  if (!data) return;
 
   productos = data;
   mostrarProductos();
 }
 
 async function cargarMesas() {
-  const { data, error } = await db
-    .from("mesas")
-    .select("*")
-    .eq("activa", true)
-    .order("numero", { ascending: true });
+  const data = await datos.mesasActivas();
 
-  if (error) {
-    console.error(error);
-    alert("Error al cargar mesas");
-    return;
-  }
+  if (!data) return;
 
   const mesaSelect = document.getElementById("mesaSelect");
   mesaSelect.innerHTML = "";
@@ -425,49 +396,34 @@ async function guardarOrden() {
     estadoPreparacion = "en_produccion";
   }
 
-  const { data: orden, error: errorOrden } = await db
-    .from("ordenes")
-    .insert([{
-      mesa_id: mesaId,
-      empleado_id: empleado.id,
-      tipo,
-      estado: "abierta",
-      estado_preparacion: estadoPreparacion,
-      referencia: nombreCliente,
-      nombre_cliente: nombreCliente,
-      telefono_cliente: telefonoCliente || null,
-      excepciones: excepciones || null,
-      notas: notas || null,
-      subtotal: total,
-      descuento: 0,
-      total
-    }])
-    .select()
-    .single();
+  const orden = await datos.crearOrden({
+    mesa_id: mesaId,
+    empleado_id: empleado.id,
+    tipo,
+    estado: "abierta",
+    estado_preparacion: estadoPreparacion,
+    referencia: nombreCliente,
+    nombre_cliente: nombreCliente,
+    telefono_cliente: telefonoCliente || null,
+    excepciones: excepciones || null,
+    notas: notas || null,
+    subtotal: total,
+    descuento: 0,
+    total
+  }, "Error al guardar orden");
 
-  if (errorOrden) {
-    console.error(errorOrden);
-    alert("Error al guardar orden");
-    return;
-  }
+  if (!orden) return;
 
   for (const paquete of paquetes) {
     if (paquete.items.length === 0) continue;
 
-    const { data: paqueteGuardado, error: errorPaquete } = await db
-      .from("orden_paquetes")
-      .insert([{
-        orden_id: orden.id,
-        nombre: paquete.nombre
-      }])
-      .select()
-      .single();
+    const paqueteGuardado = await datos.crearPaquete(
+      orden.id,
+      paquete.nombre,
+      "La orden se creó, pero hubo error al guardar paquetes"
+    );
 
-    if (errorPaquete) {
-      console.error(errorPaquete);
-      alert("La orden se creó, pero hubo error al guardar paquetes");
-      return;
-    }
+    if (!paqueteGuardado) return;
 
     const items = paquete.items.map(item => ({
       orden_id: orden.id,
@@ -478,15 +434,12 @@ async function guardarOrden() {
       precio_unitario: item.precio_unitario
     }));
 
-    const { error: errorItems } = await db
-      .from("orden_items")
-      .insert(items);
+    const guardados = await datos.agregarItems(
+      items,
+      "La orden se creó, pero hubo error al guardar productos"
+    );
 
-    if (errorItems) {
-      console.error(errorItems);
-      alert("La orden se creó, pero hubo error al guardar productos");
-      return;
-    }
+    if (!guardados) return;
   }
 
   alert("Orden guardada correctamente");
@@ -496,11 +449,9 @@ async function guardarOrden() {
   crearPaquete();
 
   if (tipo === "local") {
-    const { data: mesaSeleccionada } = await db
-      .from("mesas")
-      .select("*")
-      .eq("id", mesaId)
-      .single();
+    const mesaSeleccionada = await datos.mesaPorId(mesaId);
+
+    if (!mesaSeleccionada) return;
 
     localStorage.setItem("mesa", JSON.stringify(mesaSeleccionada));
     window.location.href = "cuentas.html";

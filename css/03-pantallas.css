@@ -1,47 +1,6 @@
-:root {
-  --rojo-terracota: #A63D40;
-  --naranja-quemado: #D98324;
-  --amarillo-ocre: #E9B44C;
-  --verde-oliva: #58641D;
-  --cafe-madera: #3E2723;
-  --crema-pergamino: #F5E9D4;
-
-  --texto: #2b211e;
-  --blanco-calido: #fffaf1;
-  --borde: #e2d2b8;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--crema-pergamino);
-  color: var(--texto);
-}
-
-.topbar {
-  height: 80px;
-  background: var(--cafe-madera);
-  color: var(--crema-pergamino);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  border-bottom: 4px solid var(--naranja-quemado);
-}
-
-.topbar h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.topbar p {
-  margin: 4px 0 0;
-  color: #ead9bd;
-}
+/* Reglas de una sola pantalla: layout del POS, login, dashboard,
+   modales y cuenta por paquetes. Se carga al final: aqui viven los
+   ajustes que deben ganarle a 02-componentes.css. */
 
 .pos-layout {
   display: grid;
@@ -51,206 +10,37 @@ body {
   height: calc(100vh - 80px);
 }
 
-.panel {
-  background: var(--blanco-calido);
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 8px 24px rgba(62, 39, 35, 0.14);
-  border: 1px solid var(--borde);
-  overflow: auto;
+/* Botón "Mostrar/Ocultar productos" de pos.html: encoge la columna de
+   productos para dejarle toda la pantalla a la cuenta. */
+.pos-layout.productos-ocultos {
+  grid-template-columns: 54px 1fr;
 }
 
-.panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 15px;
+.pos-layout.productos-ocultos .productos-panel {
+  padding: 16px 6px;
+  overflow: hidden;
 }
 
-.panel h2 {
-  color: var(--cafe-madera);
+.pos-layout.productos-ocultos .productos-panel > *:not(.panel-header) {
+  display: none;
 }
 
-.productos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 14px;
+.pos-layout.productos-ocultos .productos-panel .panel-header {
+  margin: 0;
+  justify-content: center;
 }
 
-.producto-btn {
-  min-height: 95px;
-  border: 1px solid #dfc18e;
-  background: #fff4dc;
-  border-radius: 16px;
-  cursor: pointer;
-  padding: 14px;
-  text-align: left;
-  transition: 0.15s;
+.pos-layout.productos-ocultos .productos-panel .panel-header-acciones {
+  display: none;
 }
 
-.producto-btn:hover {
-  transform: translateY(-2px);
-  background: var(--amarillo-ocre);
-  box-shadow: 0 8px 18px rgba(62, 39, 35, 0.18);
+.pos-layout.productos-ocultos .productos-panel .panel-header h2 {
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  font-size: 15px;
+  margin: 0;
 }
 
-.producto-btn strong {
-  display: block;
-  font-size: 16px;
-  margin-bottom: 8px;
-  color: var(--cafe-madera);
-}
-
-.producto-btn span {
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--rojo-terracota);
-}
-
-.carrito-panel {
-  display: flex;
-  flex-direction: column;
-}
-
-.carrito-lista {
-  flex: 1;
-  overflow: auto;
-  border: 1px solid var(--borde);
-  border-radius: 14px;
-  padding: 10px;
-  margin-bottom: 16px;
-  background: #f8ecd8;
-}
-
-.carrito-item {
-  background: var(--blanco-calido);
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 10px;
-  border: 1px solid var(--borde);
-}
-
-.carrito-item-header {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: var(--cafe-madera);
-}
-
-.carrito-controles {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.total-box,
-.cambio-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--cafe-madera);
-  color: var(--crema-pergamino);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
-}
-
-.total-box strong,
-.cambio-box strong {
-  font-size: 28px;
-}
-
-.pago-box {
-  display: grid;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.pago-box label {
-  font-weight: bold;
-  color: var(--cafe-madera);
-}
-
-.pago-box select,
-.pago-box input {
-  height: 44px;
-  border-radius: 10px;
-  border: 1px solid var(--borde);
-  padding: 0 12px;
-  font-size: 16px;
-  background: #fffaf1;
-  color: var(--texto);
-}
-
-.pago-box select:focus,
-.pago-box input:focus {
-  outline: 2px solid var(--amarillo-ocre);
-  border-color: var(--naranja-quemado);
-}
-
-.acciones {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 10px;
-}
-
-button {
-  border: none;
-  border-radius: 12px;
-  padding: 12px 16px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.btn-primary {
-  background: var(--naranja-quemado);
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #bf6f1f;
-}
-
-.btn-secondary {
-  background: var(--cafe-madera);
-  color: var(--crema-pergamino);
-  border: 1px solid #705047;
-}
-
-.btn-secondary:hover {
-  background: #2f1d1a;
-}
-
-.btn-success {
-  background: var(--verde-oliva);
-  color: white;
-  font-size: 18px;
-}
-
-.btn-success:hover {
-  background: #465016;
-}
-
-.btn-danger {
-  background: var(--rojo-terracota);
-  color: white;
-}
-
-.btn-danger:hover {
-  background: #8f3336;
-}
-
-.btn-small {
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: #ead9bd;
-  color: var(--cafe-madera);
-}
-
-.btn-small:hover {
-  background: var(--amarillo-ocre);
-}
 /* Estilos de login */
 .login-body {
   min-height: 100vh;

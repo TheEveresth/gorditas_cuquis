@@ -1,10 +1,5 @@
-const empleado = JSON.parse(localStorage.getItem("empleado"));
-
 let pedidos = [];
 
-if (!empleado) {
-  window.location.href = "index.html";
-}
 
 const buscador = document.getElementById("buscadorPedidos");
 
@@ -15,28 +10,9 @@ if (buscador) {
 }
 
 async function cargarPedidos() {
-  const { data, error } = await db
-    .from("ordenes")
-    .select(`
-      *,
-      orden_items (
-        cantidad,
-        precio_unitario,
-        nombre_personalizado,
-        productos (
-          nombre
-        )
-      )
-    `)
-    .eq("tipo", "para_llevar")
-    .eq("estado", "abierta")
-    .order("created_at", { ascending: true });
+  const data = await datos.pedidosParaLlevarAbiertos();
 
-  if (error) {
-    console.error(error);
-    alert("Error al cargar pedidos");
-    return;
-  }
+  if (!data) return;
 
   pedidos = data;
   pintarPedidos();
@@ -136,32 +112,17 @@ function pintarGrupo(contenedorId, listaPedidos) {
 }
 
 async function marcarListo(ordenId) {
-  const { error } = await db
-    .from("ordenes")
-    .update({ estado_preparacion: "listo" })
-    .eq("id", ordenId);
+  const listo = await datos.marcarOrdenLista(ordenId);
 
-  if (error) {
-    console.error(error);
-    alert("Error al marcar pedido como listo");
-    return;
-  }
+  if (!listo) return;
 
   await cargarPedidos();
 }
 
 async function abrirPedido(ordenId) {
-  const { data, error } = await db
-    .from("ordenes")
-    .select("*")
-    .eq("id", ordenId)
-    .single();
+  const data = await datos.ordenPorId(ordenId, "Error al abrir pedido");
 
-  if (error) {
-    console.error(error);
-    alert("Error al abrir pedido");
-    return;
-  }
+  if (!data) return;
 
   localStorage.removeItem("mesa");
   localStorage.setItem("ordenActual", JSON.stringify(data));

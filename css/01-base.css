@@ -1,0 +1,47 @@
+/* Base: variables de marca, reset y barra superior.
+   Se carga primero en todas las pantallas. */
+
+:root {
+  --rojo-terracota: #A63D40;
+  --naranja-quemado: #D98324;
+  --amarillo-ocre: #E9B44C;
+  --verde-oliva: #58641D;
+  --cafe-madera: #3E2723;
+  --crema-pergamino: #F5E9D4;
+
+  --texto: #2b211e;
+  --blanco-calido: #fffaf1;
+  --borde: #e2d2b8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--crema-pergamino);
+  color: var(--texto);
+}
+
+.topbar {
+  height: 80px;
+  background: var(--cafe-madera);
+  color: var(--crema-pergamino);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  border-bottom: 4px solid var(--naranja-quemado);
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.topbar p {
+  margin: 4px 0 0;
+  color: #ead9bd;
+}

@@ -1,11 +1,7 @@
-const empleado = JSON.parse(localStorage.getItem("empleado"));
 const mesa = JSON.parse(localStorage.getItem("mesa"));
 
 let cuentas = [];
 
-if (!empleado) {
-  window.location.href = "index.html";
-}
 
 if (!mesa) {
   window.location.href = "mesas.html";
@@ -23,24 +19,9 @@ if (buscador) {
 }
 
 async function cargarCuentas() {
-  const { data, error } = await db
-    .from("ordenes")
-    .select(`
-      *,
-      orden_items (
-        cantidad,
-        precio_unitario
-      )
-    `)
-    .eq("mesa_id", mesa.id)
-    .eq("estado", "abierta")
-    .order("created_at", { ascending: true });
+  const data = await datos.cuentasAbiertasDeMesa(mesa.id);
 
-  if (error) {
-    console.error(error);
-    alert("Error al cargar cuentas");
-    return;
-  }
+  if (!data) return;
 
   cuentas = data;
   pintarCuentas();
@@ -102,43 +83,27 @@ function pintarCuentas() {
 }
 
 async function crearCuenta() {
-  const { data, error } = await db
-    .from("ordenes")
-    .insert([{
-      mesa_id: mesa.id,
-      empleado_id: empleado.id,
-      tipo: "local",
-      estado: "abierta",
-      estado_preparacion: "pendiente",
-      subtotal: 0,
-      descuento: 0,
-      total: 0
-    }])
-    .select()
-    .single();
+  const data = await datos.crearOrden({
+    mesa_id: mesa.id,
+    empleado_id: empleado.id,
+    tipo: "local",
+    estado: "abierta",
+    estado_preparacion: "pendiente",
+    subtotal: 0,
+    descuento: 0,
+    total: 0
+  }, "Error al crear cuenta");
 
-  if (error) {
-    console.error(error);
-    alert("Error al crear cuenta");
-    return;
-  }
+  if (!data) return;
 
   localStorage.setItem("ordenActual", JSON.stringify(data));
   window.location.href = "pos.html";
 }
 
 async function abrirCuenta(ordenId) {
-  const { data, error } = await db
-    .from("ordenes")
-    .select("*")
-    .eq("id", ordenId)
-    .single();
+  const data = await datos.ordenPorId(ordenId, "Error al abrir cuenta");
 
-  if (error) {
-    console.error(error);
-    alert("Error al abrir cuenta");
-    return;
-  }
+  if (!data) return;
 
   localStorage.setItem("ordenActual", JSON.stringify(data));
   window.location.href = "pos.html";
