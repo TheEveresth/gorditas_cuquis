@@ -13,5 +13,6 @@ sirven y el precio depende de quién cobre.
 [002](002_ReglasPrecioGordita.md) obliga a dar de alta una fila por combinación de tortilla y
 guiso, que es el camino que no se quiere.
 
-**Cómo se cierra:** un plan en `.docs/002_specs/` que primero modele el precio y luego cargue el
-catálogo con un script `seed` que ejecute el usuario.
+**Cómo se cierra:** el plan [013](../002_specs/013_PrecioGordita/), escrito el 2026-11-21, que
+primero modela el precio y luego carga el catálogo con un script `seed` que ejecuta el usuario.
+Su paso 4 está bloqueado hasta que llegue el export del Excel.

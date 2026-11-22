@@ -6,6 +6,7 @@ empezar, así que no crece a resumen. El procedimiento está en la skill `plan-c
 | `NNN` | Plan | Estado | De qué se trata |
 |---|---|---|---|
 | [009](009_DeudasBd/) | Deudas de la base | abierto | `revoke` de `rls_auto_enable()`; script escrito, sin ejecutar |
+| [013](013_PrecioGordita/) | Precio de la gordita y catálogo real | abierto | modelo de modificadores; scripts escritos, falta el export del Excel |
 
 Estados: `abierto` (escrito, sin empezar), `en curso`, `cerrado`.
 
@@ -36,13 +37,16 @@ Si el número choca, se avisa y se propone el siguiente libre. No se renombra si
 
 En orden de lo que más haría falta, según `.docs/003_deuda/` y las reglas de negocio:
 
-1. Cargar el catálogo real y modelar el precio de la gordita (es lo que bloquea usar el POS como
-   único sistema).
-2. Corte de caja, que necesita guardar lo recibido en efectivo.
-3. Pantalla de administración de catálogos (productos, mesas, empleados).
+1. Pantalla de administración de catálogos (productos, categorías, mesas, empleados, guisos):
+   es lo que sigue al plan 013, porque cargar el catálogo por script cada vez que cambia un
+   precio no se sostiene.
+2. Roles y permisos: `login_empleado` ya devuelve `rol_sistema_id` y **nadie lo lee**. Va antes
+   de nómina e inventario, no después.
+3. Corte de caja, que necesita guardar lo recibido en efectivo.
 4. Ticket y comanda en la impresora de 58 mm.
 5. Gastos, nómina e inventario: cada módulo es su propio plan, y el de nómina empieza por
    levantar las reglas con el dueño.
 
-Ya no está en la lista: que `pedidos.html` muestre las órdenes de mesa, hecho el 2026-11-21
-(deuda 003).
+Ya no está en la lista: cargar el catálogo y modelar el precio de la gordita, que es el plan
+[013](013_PrecioGordita/) desde el 2026-11-21; y que `pedidos.html` muestre las órdenes de mesa,
+hecho el 2026-11-21 (deuda 003).
