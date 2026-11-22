@@ -5,7 +5,7 @@ empezar, así que no crece a resumen. El procedimiento está en la skill `plan-c
 
 | `NNN` | Plan | Estado | De qué se trata |
 |---|---|---|---|
-| — | — | — | Todavía no hay planes abiertos |
+| [009](009_DeudasBd/) | Deudas de la base | abierto | `revoke` de `rls_auto_enable()`; script escrito, sin ejecutar |
 
 Estados: `abierto` (escrito, sin empezar), `en curso`, `cerrado`.
 
@@ -39,8 +39,10 @@ En orden de lo que más haría falta, según `.docs/003_deuda/` y las reglas de 
 1. Cargar el catálogo real y modelar el precio de la gordita (es lo que bloquea usar el POS como
    único sistema).
 2. Corte de caja, que necesita guardar lo recibido en efectivo.
-3. Que `pedidos.html` muestre también las órdenes de mesa.
-4. Pantalla de administración de catálogos (productos, mesas, empleados).
-5. Ticket y comanda en la impresora de 58 mm.
-6. Gastos, nómina e inventario: cada módulo es su propio plan, y el de nómina empieza por
+3. Pantalla de administración de catálogos (productos, mesas, empleados).
+4. Ticket y comanda en la impresora de 58 mm.
+5. Gastos, nómina e inventario: cada módulo es su propio plan, y el de nómina empieza por
    levantar las reglas con el dueño.
+
+Ya no está en la lista: que `pedidos.html` muestre las órdenes de mesa, hecho el 2026-11-21
+(deuda 003).

@@ -37,8 +37,9 @@ login → dashboard ───┤                    ├─→ tomar-orden → (o
    renglón en `ordenes` con `estado = 'abierta'` y `tipo = 'local' | 'para_llevar'`.
 3. **Capturar.** `tomar-orden` agrega los productos. Los renglones se agrupan en **paquetes**
    (`orden_paquetes`): un paquete es lo que va junto para una persona o para una entrega.
-4. **Cocina.** `pedidos` muestra la cola. **Hoy filtra solo `tipo = para_llevar`**: las órdenes
-   de mesa no llegan ahí (está anotado como deuda).
+4. **Cocina.** `pedidos` muestra la cola: **una sola lista** con las órdenes abiertas de mesa y
+   para llevar, en orden de llegada y etiquetadas "Mesa 3" o "Para llevar". `pendiente` y
+   `en_produccion` van juntas en "Por preparar"; `listo` aparte.
 5. **Cobrar.** `pos` permite cobrar **renglones sueltos**, no toda la cuenta: cada `orden_items`
    tiene su bandera `pagado`. Al cobrar se llama la RPC `cobrar_items`, que en **una
    transacción** registra el pago, marca los renglones y, si ya no queda nada pendiente, cierra
@@ -49,7 +50,7 @@ login → dashboard ───┤                    ├─→ tomar-orden → (o
 | Pantalla | Script | Qué hace | Tablas que toca |
 |---|---|---|---|
 | `index.html` | `js/pantallas/index.js` | login | RPC `login_empleado` |
-| `dashboard.html` | `dashboard.js` | ventas del día, órdenes, mesas con cuenta abierta | `ordenes` |
+| `dashboard.html` | `dashboard.js` | ventas del día, órdenes, mesas con cuenta abierta | `pagos_venta`, `ordenes` |
 | `mesas.html` | `mesas.js` | mapa de mesas con su total actual | `mesas`, `ordenes` |
 | `cuentas.html` | `cuentas.js` | cuentas abiertas de una mesa | `ordenes`, `orden_items` |
 | `tomar-orden.html` | `tomar-orden.js` | captura por paquetes | `productos`, `categorias`, `ordenes`, `orden_paquetes`, `orden_items` |

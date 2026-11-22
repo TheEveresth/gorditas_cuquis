@@ -16,9 +16,18 @@ fecha_programada timestamptz, subtotal numeric, descuento numeric, total numeric
 created_at timestamptz, closed_at timestamptz,
 referencia text, nombre_cliente text, telefono_cliente text, excepciones text, notas text
 ```
-- `tipo`: `local` | `para_llevar`.
-- `estado`: `abierta` | `cerrada`. Lo cierra `cobrar_items` cuando no queda nada pendiente.
-- `estado_preparacion`: `pendiente` | `en_produccion` | `entregado`.
+- Las tres columnas son `text` con un `check`, no enums. Lo que el `check` permite y lo que el
+  POS usa de verdad no es lo mismo; comprobado el 2026-11-21 con `pg_get_constraintdef`:
+- `tipo`: el `check` permite `local` | `para_llevar` | `domicilio` | `programado`. El POS solo
+  escribe los dos primeros; los otros dos quedaron del diseño del Excel y no tienen pantalla.
+- `estado`: el `check` permite `abierta` | `cerrada` | `cancelada`. `cobrar_items` la cierra
+  cuando no queda nada pendiente. **Nada cancela una orden todavía.**
+- `estado_preparacion`: el `check` permite `pendiente` | `en_produccion` | `listo` |
+  `entregado`, y el default es `pendiente`. Una orden de mesa nace `pendiente` y una para
+  llevar `en_produccion`; `pedidos.html` pinta las dos juntas en "Por preparar" y `listo`
+  aparte. `listo` lo pone el botón "Marcar lista" de cocina, y **`entregado` lo pone la RPC
+  `cobrar_items`** al cerrar la cuenta (comprobado el 2026-11-21 cobrando una orden de prueba).
+  Nadie lo escribe desde el navegador.
 - `mesa_id` es nulo en los pedidos para llevar.
 
 ### `orden_paquetes` — agrupación de renglones dentro de una cuenta
