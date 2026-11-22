@@ -182,13 +182,17 @@ const datos = {
     return data;
   },
 
-  // Cola de la cocina. Hoy solo trae los pedidos para llevar: las ordenes de
-  // mesa no llegan a esta pantalla (.docs/003_deuda/003_PedidosSoloParaLlevar.md).
-  async pedidosParaLlevarAbiertos() {
+  // Cola de la cocina: TODAS las ordenes abiertas, de mesa y para llevar, en
+  // orden de llegada. Trae `mesas` para que la tarjeta pueda decir "Mesa 3".
+  async ordenesAbiertasDeCocina() {
     const { data, error } = await db
       .from("ordenes")
       .select(`
         *,
+        mesas (
+          numero,
+          nombre
+        ),
         orden_items (
           cantidad,
           precio_unitario,
@@ -198,12 +202,11 @@ const datos = {
           )
         )
       `)
-      .eq("tipo", "para_llevar")
       .eq("estado", "abierta")
       .order("created_at", { ascending: true });
 
     if (error) {
-      avisarError("Error al cargar pedidos", error);
+      avisarError("Error al cargar la cola de cocina", error);
       return null;
     }
 
