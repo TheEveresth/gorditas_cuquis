@@ -82,24 +82,6 @@ function pintarCuentas() {
   });
 }
 
-async function crearCuenta() {
-  const data = await datos.crearOrden({
-    mesa_id: mesa.id,
-    empleado_id: empleado.id,
-    tipo: "local",
-    estado: "abierta",
-    estado_preparacion: "pendiente",
-    subtotal: 0,
-    descuento: 0,
-    total: 0
-  }, "Error al crear cuenta");
-
-  if (!data) return;
-
-  localStorage.setItem("ordenActual", JSON.stringify(data));
-  window.location.href = "pos.html";
-}
-
 async function abrirCuenta(ordenId) {
   const data = await datos.ordenPorId(ordenId, "Error al abrir cuenta");
 
