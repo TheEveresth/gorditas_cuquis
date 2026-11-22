@@ -44,6 +44,34 @@ async function cargarMesas() {
     option.textContent = `Mesa ${mesa.numero}`;
     mesaSelect.appendChild(option);
   });
+
+  preseleccionarMesaDeContexto();
+}
+
+// Si llegamos desde una mesa (Mesas -> Ver mesa -> Tomar nueva orden), la orden
+// es de ESA mesa: se preselecciona para no guardarla en otra por descuido, que
+// antes pasaba callado (.docs/003_deuda/011_TomarOrdenPierdeLaMesa.md).
+// El origen viaja en la URL y no en `localStorage` a proposito: la mesa que se
+// visito hace rato sigue guardada, y se colaria en un pedido para llevar.
+// Se llama al final de cargarMesas porque necesita las opciones ya pintadas.
+function preseleccionarMesaDeContexto() {
+  const origen = new URLSearchParams(window.location.search).get("origen");
+
+  if (origen !== "mesa") return;
+
+  const mesaContexto = JSON.parse(localStorage.getItem("mesa") || "null");
+
+  if (!mesaContexto || !mesaContexto.id) return;
+
+  const mesaSelect = document.getElementById("mesaSelect");
+  const existe = [...mesaSelect.options].some(o => o.value === mesaContexto.id);
+
+  if (!existe) return;
+
+  document.getElementById("tipoPedido").value = "local";
+  mesaSelect.value = mesaContexto.id;
+
+  cambiarTipoPedido();
 }
 
 // ==========================
