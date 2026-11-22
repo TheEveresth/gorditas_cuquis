@@ -213,13 +213,18 @@ const datos = {
     return data;
   },
 
-  // Para el dashboard: ventas del dia. `desde` es una fecha en ISO.
-  async ordenesCerradasDesde(desde) {
+  // Para el dashboard: los cobros desde una fecha (ISO). Las ventas se cuentan
+  // por el PAGO, no por la orden: una cuenta que se abre un dia y se cobra al
+  // siguiente se contaba antes en ninguno de los dos
+  // (.docs/003_deuda/010_VentasDelDiaPorFechaDeAlta.md).
+  // `orden_id` viene para poder contar cuantas cuentas distintas se cobraron.
+  // Ojo con los reportes historicos: los pagos anteriores al 2026-11-14 traen
+  // el monto inflado (deuda 006).
+  async pagosDesde(desde) {
     const { data, error } = await db
-      .from("ordenes")
-      .select("total, created_at")
-      .gte("created_at", desde)
-      .eq("estado", "cerrada");
+      .from("pagos_venta")
+      .select("monto, orden_id, metodo_pago, fecha")
+      .gte("fecha", desde);
 
     if (error) {
       avisarError("Error al cargar las ventas del día", error);
